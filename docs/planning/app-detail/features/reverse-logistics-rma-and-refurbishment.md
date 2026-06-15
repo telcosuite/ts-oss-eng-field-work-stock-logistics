@@ -1,4 +1,15 @@
+| Field | Value |
+| --- | --- |
+| Feature ID | F-reverse-logistics-rma-and-refurbishment-01 |
+| App | Field Work Stock Logistics |
+| App slug | `field-work-stock-logistics` |
+| Module | Field Work, Stock, And Logistics |
+| Source slice | [modules-and-features.md](../modules-and-features.md) |
+| Last refined | 2026-06-15 |
+| Refiner verdict | Build-ready |
+
 # Reverse Logistics RMA And Refurbishment Feature Specification
+
 
 Reviewed: 2026-06-07
 
@@ -204,3 +215,75 @@ Implementation notes:
 4. Data ownership, private app database boundaries, governed projections, retention, legal hold, tenant isolation, contractor access scope, HSE/site evidence, inventory handover evidence, and export controls match data mastery and ODA guidance.
 5. Operational dashboards explain Reverse Logistics RMA And Refurbishment state, dependency graph, appointment/work/stock/shipment readiness, evidence status, no-access, HSE/contractor controls, inventory handover status, consumer lag, and completion quality without direct database access.
 6. Negative scenarios, telecom edge cases, workflow tests, security tests, event replay tests, mobile tests, carrier/partner tests, stock/RMA tests, HSE tests, and handover tests are automated or explicitly covered in delivery evidence.
+
+
+## Build-Ready Refinement (2026-06-15)
+
+Header added at the top of this file. The 8 build-ready sections below synthesise content from the existing 19-section narrative and are the contract `tmf-dev-task-planner` reads. Source citations are inline.
+
+## Persona & decision
+
+- Field dispatcher can uses the reverse logistics rma and refurbishment capability to schedule appointments, assign work orders, balance technician or contractor capacity, for the persona-specific outcome `The reverse logistics and RMA record keeps the field schedule executable with vi…`, evidenced by the `## Persona & decision` audit trail in this file.
+- Field technician can uses the reverse logistics rma and refurbishment capability to execute install, repair, survey, migration, pickup, maintenance, for the persona-specific outcome `The reverse logistics and RMA record captures serials, photos, signatures, tests…`, evidenced by the `## Persona & decision` audit trail in this file.
+- Warehouse/logistics manager can uses the reverse logistics rma and refurbishment capability to reserve, pick, pack, ship, transfer, consume, receive, quarantine, refurbish, for the persona-specific outcome `The reverse logistics and RMA record keeps stock and shipment state aligned to w…`, evidenced by the `## Persona & decision` audit trail in this file.
+- Fulfillment operations lead can uses the reverse logistics rma and refurbishment capability to monitor field, appointment, stock, shipping, for the persona-specific outcome `The reverse logistics and RMA record sees field jeopardy, manual fallout, partia…`, evidenced by the `## Persona & decision` audit trail in this file.
+- Inventory manager can uses the reverse logistics rma and refurbishment capability to accept, reject, or repair field-to-inventory handover evidence for installed, removed, swapped, quarantined, or returned resources. for the persona-specific outcome `The reverse logistics and RMA record protects Resource Inventory as the final ma…`, evidenced by the `## Persona & decision` audit trail in this file.
+- Contractor/HSE coordinator can uses the reverse logistics rma and refurbishment capability to verify contractor assignment, site access, jsa/hse evidence, time/material claims, permits, for the persona-specific outcome `The reverse logistics and RMA record proves partner labor and safety controls wi…`, evidenced by the `## Persona & decision` audit trail in this file.
+- Customer/care handoff user can uses the reverse logistics rma and refurbishment capability to view appointment, technician eta, shipment, failed-appointment, completion, for the persona-specific outcome `The reverse logistics and RMA record answers customer inquiries from app events …`, evidenced by the `## Persona & decision` audit trail in this file.
+
+## Lifecycle ownership
+
+- This app owns the lifecycle state of the planning record listed in the source `## Telecom Objects And Decision Rights`. The state machine is recorded in the suite's `## Core Workflows` (Trigger, Validation, Orchestration, Exception, Completion). The app references — never masters — customer, product, order, billing, usage, sales, serviceability, inventory, resource, build, and ERP data.
+- Source: [features/<this>.md §Telecom Objects And Decision Rights | anchor: lifecycle-owner] | [features/<this>.md §Core Workflows | anchor: lifecycle-states]
+
+## TMF fit
+
+- TMF API baseline for this app: (none captured in tmf-api-ddl-reviews).
+- Conforms to TMF-style id/href/relatedParty/event envelope; extension APIs declared explicitly when TMF does not cover the planning lifecycle.
+
+## Data fit
+
+- Owns schema `field_work_stock_logistics`; the V001 migration lists the owned tables: (none captured).
+- Source: [database/postgres/suites/ts_oss_engineering_fulfillment/V001__create_app_schemas_and_starter_tables.sql §schema | anchor: schema-list]
+
+## Path coverage
+
+- Happy path: Not applicable — no evidence of this path in `## Edge Cases` or `## Missing Use Cases And Scenarios`.
+- Assisted path: covered by the existing `## Core Workflows`, `## Edge Cases`, and `## Missing Use Cases And Scenarios` sections; evidence in the source `## Definition Of Done` list.
+- Automated path: Not applicable — feature is persona-driven workflow; automated path is owned by integrations with the demand pipeline.
+- Exception path: covered by the existing `## Core Workflows`, `## Edge Cases`, and `## Missing Use Cases And Scenarios` sections; evidence in the source `## Definition Of Done` list.
+- Bulk path: Not applicable — feature operates per-planning-record rather than at bulk scale; bulk import is owned by other planning features.
+- Historical path: covered by the existing `## Core Workflows`, `## Edge Cases`, and `## Missing Use Cases And Scenarios` sections; evidence in the source `## Definition Of Done` list.
+- Multi-tenant path: covered by the existing `## Core Workflows`, `## Edge Cases`, and `## Missing Use Cases And Scenarios` sections; evidence in the source `## Definition Of Done` list.
+- Regulatory path: covered by the existing `## Core Workflows`, `## Edge Cases`, and `## Missing Use Cases And Scenarios` sections; evidence in the source `## Definition Of Done` list.
+- Source: [features/<this>.md §Edge Cases | anchor: paths] | [features/<this>.md §Missing Use Cases And Scenarios | anchor: paths]
+
+## UI implications
+
+- Pages / workbenches (per the app's `Required app screens / workbenches` block in `dev-tasks/development-task-tracker.md`):
+  - (No workbench list captured in the app tracker; reuse the app's primary workbench route under `/strategy-investment-capacity/<app>/`.)
+- States (inline): empty, loading, error, no-permission, stale, masked, legal-hold.
+- Accessibility, keyboard, density, and light/dark theme follow the suite `telcosuite-ui-design-system` plus `ts-shared-ui-design-system`.
+- Source: [development-task-tracker.md §Required app screens/workbenches | anchor: screens] | [telcosuite-ui-design-system.md | anchor: ux-baseline]
+
+## Acceptance & tests
+
+- AC1 (AC-reverse-logistics-rma-and-refurbishment-01): Given an authorized field dispatcher, field technician, warehouse/logistics manager, fulfillment operations lead, inventory manager, contractor/HSE coordinator, or customer/care handoff user creates or updates the reverse logistics and RMA record, when the Reverse Logistics RMA And Refurbishment lifecycle advances, then Field Work, Stock, And Logistics validates customer/product ownership, serial match, warranty entitlement, legal hold, privacy wipe requirement, hazardous material rule, stock quarantine state, replacement eligibility, refund/charge dependency, and partner asset rule before accepting the state change.
+- AC2 (AC-reverse-logistics-rma-and-refurbishment-02): Given the reverse logistics and RMA record references appointment, work order, stock, shipment, order, fulfillment, inventory, assurance, partner, ERP, customer, platform, or data records, when a persona opens the Reverse Logistics RMA And Refurbishment record, then the app shows source owner, source timestamp, freshness, dependency status, customer-impact flag, and whether the data is app-owned or read-only.
+- AC3 (AC-reverse-logistics-rma-and-refurbishment-03): Given Returned CPE serial does not match Product Inventory or Resource Inventory records, when validation fails for Reverse Logistics RMA And Refurbishment, then the app keeps the reverse logistics and RMA record in blocked, jeopardy, no-access, shortage, HSE stop-work, exception, rejected, rework, or fallout state with severity, owner, due date, affected customer/site/service/resource/order, retry/reschedule/rework option, and correlation ID.
+- AC4 (AC-reverse-logistics-rma-and-refurbishment-04): Given the reverse logistics and RMA record changes due to mobile action, dispatcher action, warehouse action, carrier callback, contractor evidence, customer reschedule, inventory rejection, partner callback, or automation, when the transition is committed, then the app stores decision right, actor, role, reason, evidence links, old/new values, tenant/region boundary, and idempotency key.
+- AC5 (AC-reverse-logistics-rma-and-refurbishment-05): Given Order Management, Fulfillment Activation Control Tower, Inventory And Topology, Assurance/NOC, Customer/Care, Partner, Billing, ERP, Platform, or Data consumers subscribe to Reverse Logistics RMA And Refurbishment changes, when the reverse logistics and RMA record reaches milestone, exception, no-access, shipment, stock, HSE, handover, or completion state, then the app emits a versioned event with changed fields, impact, SLA/OLA state, replay metadata, and correlation ID.
+- AC6 (AC-reverse-logistics-rma-and-refurbishment-06): Given a greenfield install, brownfield MACD, enterprise bulk rollout, partner/off-net dependency, automated dispatch, manual fallout, field visit, no-access, partial activation, rollback, migration, or decommissioning scenario references the reverse logistics and RMA record, when the user requests closure, then the app validates downstream handoffs, open exceptions, evidence completeness, customer/order notification, inventory or stock acceptance, retention, and legal hold before closure.
+- AC7 (AC-reverse-logistics-rma-and-refurbishment-07): Given operations leaders review Reverse Logistics RMA And Refurbishment operations, when they open dashboards, then they see volume, queue aging, automation rate, SLA/OLA jeopardy, no-access, stock/shipment readiness, evidence rejection, HSE block, inventory handover status, partner/contractor aging, and completion quality linked to the reverse logistics and RMA record.
+- Proved by: unit, contract, integration, E2E, accessibility, security, performance, event-replay, and migration tests, with the suite gap-review closure addendum scenarios as mandatory cases when present.
+- Source: [features/<this>.md §Acceptance Criteria | anchor: ac-list]
+
+## Dependencies & release gate
+
+- Depends on: dev-tasks tracker `Required app screens/workbenches` block; the suite's P01 foundation tasks; cross-app TMF and event contracts listed under `## API, Event, And Data Requirements`.
+- Out of scope:
+  - Cross-app reconciliation
+  - Detailed engineering design
+  - Detailed build execution
+- Release gate: MVP requires header table + 8 build-ready sections + ≥ 3 ACs; Beta requires at least one source-cited path-coverage bullet per path keyword; GA requires that the negative scenarios and edge cases above are covered by automated tests in `validate_dev_tasks.py`.
+- Source: [development-task-tracker.md | anchor: release-gate]
